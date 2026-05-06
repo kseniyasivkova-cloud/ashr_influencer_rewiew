@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ashr · Influencer Shortlist Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F6F2;--surface:#FBFBF9;--surface-2:#F2F0E9;
+  --border:#D4D1CA;--border-soft:#E5E2DA;
+  --text:#28251D;--muted:#7A7974;--faint:#BAB9B4;
+  --primary:#01696F;--primary-hover:#0C4E54;
+  --accent-warm:#A84B2F;--accent-gold:#D19900;
+  --error:#A12C7B;--success:#437A22;
+  --green-bg:#EAF4EA;--green-fg:#2E6E2E;
+  --yellow-bg:#FEF8E6;--yellow-fg:#8A6000;
+  --red-bg:#FCEEF5;--red-fg:#8A1060;
+  --shadow:0 1px 2px rgba(40,37,29,.04),0 8px 24px rgba(40,37,29,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1100px;margin:0 auto;padding:48px 32px 96px}
+@media(max-width:640px){.wrap{padding:32px 20px 64px}}
+
+.hero{padding:32px 0 56px;border-bottom:1px solid var(--border)}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);font-weight:500;margin-bottom:20px}
+h1{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:clamp(36px,5vw,60px);line-height:1.05;letter-spacing:-.02em;margin:0 0 20px}
+.lede{font-size:18px;line-height:1.55;color:var(--muted);max-width:720px;margin:0 0 32px}
+.meta{display:flex;flex-wrap:wrap;gap:24px 40px;padding-top:24px;border-top:1px solid var(--border-soft)}
+.meta-item{display:flex;flex-direction:column;gap:4px}
+.meta-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.meta-value{font-size:15px;font-weight:500;color:var(--text)}
+.meta-value strong{color:var(--primary)}
+
+section{padding:56px 0;border-bottom:1px solid var(--border-soft)}
+section:last-of-type{border-bottom:none}
+.section-num{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.12em;color:var(--faint);font-weight:500;margin-bottom:12px}
+h2{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:clamp(26px,3.5vw,38px);line-height:1.15;letter-spacing:-.015em;margin:0 0 12px}
+.section-sub{font-size:16px;color:var(--muted);max-width:760px;margin:0 0 32px}
+h3{font-size:19px;font-weight:600;letter-spacing:-.005em;margin:32px 0 12px}
+h4{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--primary);margin:20px 0 8px}
+p{margin:0 0 12px}
+
+.callout{background:var(--surface);border-left:3px solid var(--primary);border-radius:0 10px 10px 0;padding:16px 20px;margin:18px 0;font-size:15px}
+.callout.warn{border-left-color:var(--accent-warm);background:rgba(168,75,47,.04)}
+.callout.danger{border-left-color:var(--error);background:rgba(161,44,123,.04)}
+.callout strong{color:var(--text)}
+.callout .label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-right:8px;color:var(--primary)}
+.callout.warn .label{color:var(--accent-warm)}
+.callout.danger .label{color:var(--error)}
+
+/* Seg cards */
+.seg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:20px 0}
+.seg-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px}
+.seg-card .code{font-family:"JetBrains Mono",monospace;font-size:22px;font-weight:600;color:var(--primary)}
+.seg-card .name{font-size:13px;font-weight:600;margin:4px 0 2px}
+.seg-card .who{font-size:12px;color:var(--muted)}
+.seg-card.gap{border-color:var(--error);background:rgba(161,44,123,.04)}
+.seg-card.gap .code{color:var(--error)}
+
+/* Two col */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0}
+@media(max-width:720px){.two-col{grid-template-columns:1fr}}
+.col-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.col-card h4{margin-top:0}
+.col-card ul{margin:0;padding-left:18px}
+.col-card li{font-size:14px;margin-bottom:6px;line-height:1.5}
+
+/* Funnel */
+.funnel{margin:28px 0}
+.funnel-step{display:flex;align-items:center;gap:16px;margin-bottom:10px}
+.funnel-bar-wrap{flex:1;background:var(--surface-2);border-radius:6px;height:36px;overflow:hidden;position:relative}
+.funnel-bar{height:100%;background:var(--primary);border-radius:6px;display:flex;align-items:center;padding-left:14px;min-width:60px}
+.funnel-bar.warn{background:var(--accent-gold)}
+.funnel-bar.ok{background:var(--success)}
+.funnel-num{font-family:"JetBrains Mono",monospace;font-size:15px;font-weight:600;color:white}
+.funnel-label{min-width:260px;font-size:14px;color:var(--muted)}
+.funnel-count{min-width:40px;font-family:"JetBrains Mono",monospace;font-size:14px;font-weight:600;color:var(--text)}
+
+/* Seg bar chart */
+.seg-bars{display:grid;grid-template-columns:80px 1fr 40px;gap:8px 12px;align-items:center;margin:20px 0}
+.seg-bars .seg-name{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:var(--primary)}
+.seg-bars .seg-name.gap{color:var(--error)}
+.seg-bar-track{background:var(--surface-2);border-radius:4px;height:22px;overflow:hidden}
+.seg-bar-fill{height:100%;border-radius:4px;background:var(--primary)}
+.seg-bar-fill.gap{background:var(--error);opacity:.35}
+.seg-bars .seg-count{font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:600;color:var(--text)}
+.seg-bars .seg-count.gap{color:var(--error)}
+
+/* Star cards */
+.stars-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin:24px 0}
+.star-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;position:relative;overflow:hidden}
+.star-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--primary)}
+.star-card .rank{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;color:var(--faint);font-weight:500;margin-bottom:8px}
+.star-card .handle{font-size:17px;font-weight:700;margin-bottom:2px}
+.star-card .handle a{color:var(--text);text-decoration:none}
+.star-card .handle a:hover{color:var(--primary)}
+.star-card .tagline{font-size:13px;color:var(--muted);margin-bottom:12px;font-style:italic;line-height:1.45}
+.star-card dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px}
+.star-card dt{color:var(--faint);font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding-top:2px}
+.star-card dd{margin:0;font-weight:500}
+.star-card .roi-box{margin-top:14px;padding-top:14px;border-top:1px solid var(--border-soft);display:flex;gap:20px}
+.star-card .roi-item .v{font-size:18px;font-weight:700;color:var(--primary);font-variant-numeric:tabular-nums}
+.star-card .roi-item .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-family:"JetBrains Mono",monospace}
+
+/* Budget table */
+.budget-table{width:100%;border-collapse:collapse;margin:20px 0;font-size:13px}
+.budget-table th{background:var(--surface-2);padding:10px 12px;text-align:left;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--border);white-space:nowrap}
+.budget-table td{padding:10px 12px;border-bottom:1px solid var(--border-soft);vertical-align:middle}
+.budget-table tr:last-child td{border-bottom:none}
+.budget-table .handle-cell a{color:var(--text);font-weight:600;text-decoration:none}
+.budget-table .handle-cell a:hover{color:var(--primary)}
+.budget-table .num{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+.budget-table .total-row{background:var(--surface-2);font-weight:700}
+.budget-table .total-row td{border-top:2px solid var(--border);padding-top:12px;padding-bottom:12px}
+.budget-table .note{font-size:11px;color:var(--muted);font-style:italic}
+
+/* Detailed cards */
+.detail-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin:20px 0;overflow:hidden}
+.detail-header{background:var(--surface-2);padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.detail-header .handle{font-size:17px;font-weight:700}
+.detail-header .handle a{color:var(--text);text-decoration:none}
+.detail-header .handle a:hover{color:var(--primary)}
+.detail-header .badges{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.03em;font-family:"JetBrains Mono",monospace}
+.badge.plat{background:rgba(1,105,111,.1);color:var(--primary)}
+.badge.seg{background:rgba(168,75,47,.1);color:var(--accent-warm)}
+.badge.green{background:var(--green-bg);color:var(--green-fg)}
+.badge.yellow{background:var(--yellow-bg);color:var(--yellow-fg)}
+.badge.red{background:var(--red-bg);color:var(--red-fg)}
+
+.detail-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+@media(max-width:800px){.detail-body{grid-template-columns:1fr}}
+.detail-block{padding:18px 22px;border-right:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft)}
+.detail-block:nth-child(even){border-right:none}
+.detail-block:last-child{border-right:none}
+.detail-block h5{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:0 0 12px;font-weight:500}
+.detail-block dl{margin:0}
+.detail-block dt{font-size:11px;color:var(--muted);margin-top:8px;margin-bottom:2px}
+.detail-block dd{margin:0;font-size:14px;line-height:1.45}
+.tag-green{display:inline-block;background:var(--green-bg);color:var(--green-fg);padding:1px 8px;border-radius:4px;font-size:12px;font-weight:600;font-family:"JetBrains Mono",monospace}
+.tag-yellow{display:inline-block;background:var(--yellow-bg);color:var(--yellow-fg);padding:1px 8px;border-radius:4px;font-size:12px;font-weight:600;font-family:"JetBrains Mono",monospace}
+.tag-red{display:inline-block;background:var(--red-bg);color:var(--red-fg);padding:1px 8px;border-radius:4px;font-size:12px;font-weight:600;font-family:"JetBrains Mono",monospace}
+.wave-1{display:inline-block;background:rgba(161,44,123,.1);color:var(--error);padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;font-family:"JetBrains Mono",monospace}
+.wave-1y{display:inline-block;background:rgba(209,153,0,.12);color:var(--accent-gold);padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;font-family:"JetBrains Mono",monospace}
+
+/* Rec section */
+.rec-list{list-style:none;padding:0;margin:16px 0}
+.rec-list li{padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;font-size:14px;line-height:1.55}
+.rec-list li strong{color:var(--primary)}
+.kpi-row{display:flex;flex-wrap:wrap;gap:14px;margin:24px 0}
+.kpi-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 22px;flex:1;min-width:160px}
+.kpi-box .v{font-size:30px;font-weight:700;color:var(--primary);font-variant-numeric:tabular-nums;line-height:1}
+.kpi-box .l{font-size:12px;color:var(--muted);margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="eyebrow">ashr · Influencer Research · Май 2026</div>
+  <h1>Influencer Shortlist Report</h1>
+  <p class="lede">Анализ 110 nano/micro-инфлюенсеров для органического soft launch на US-рынке. Без paid spend — только gifted access через нативный контент.</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-label">База</span><span class="meta-value"><strong>110</strong> кандидатов</span></div>
+    <div class="meta-item"><span class="meta-label">Шорт-лист</span><span class="meta-value"><strong>24</strong> прошли все фильтры</span></div>
+    <div class="meta-item"><span class="meta-label">С сегментом</span><span class="meta-value"><strong>18</strong> в S1–S2</span></div>
+    <div class="meta-item"><span class="meta-label">Платформы</span><span class="meta-value">Instagram + TikTok</span></div>
+    <div class="meta-item"><span class="meta-label">Дата отчёта</span><span class="meta-value">6 мая 2026</span></div>
+  </div>
+</div>
+
+<!-- SECTION 1: GOALS -->
+<section>
+  <div class="section-num">01 / Слайд 1</div>
+  <h2>Цели и критерии отбора</h2>
+  <p class="section-sub">Органический soft launch ashr на US-рынке через nano/micro-инфлюенсеров без paid spend. Цель — первые 500–2 000 установок от горячей нейродивергентной аудитории.</p>
+
+  <h3>Целевые сегменты</h3>
+  <div class="seg-grid">
+    <div class="seg-card">
+      <div class="code">S1</div>
+      <div class="name">ADHD</div>
+      <div class="who">18–35 US, ищут альтернативу медикации и классической медитации</div>
+    </div>
+    <div class="seg-card">
+      <div class="code">S2</div>
+      <div class="name">Burnout Professional</div>
+      <div class="who">Профессионалы 25–42, выгорание + afternoon slump</div>
+    </div>
+    <div class="seg-card gap">
+      <div class="code">S3</div>
+      <div class="name">Gen Z Detox ❗</div>
+      <div class="who">18–26, цифровой детокс, думскроллинг — <strong>0 кандидатов в базе</strong></div>
+    </div>
+    <div class="seg-card gap">
+      <div class="code">S4</div>
+      <div class="name">Sleep ❗</div>
+      <div class="who">25–45, нарушение сна, засыпают с телефоном — <strong>0 кандидатов</strong></div>
+    </div>
+    <div class="seg-card gap">
+      <div class="code">S5</div>
+      <div class="name">Meditation Skeptic ❗</div>
+      <div class="who">22–38, скептики wellness — <strong>0 жизнеспособных кандидатов</strong></div>
+    </div>
+  </div>
+
+  <div class="two-col" style="margin-top:28px">
+    <div class="col-card">
+      <h4>✅ Критерии входа</h4>
+      <ul>
+        <li>Nano 10–50K подписчиков</li>
+        <li>ER выше порога по сегменту (S1 &gt;6%, S2 &gt;4%)</li>
+        <li>Последний пост ≤14 дней назад</li>
+        <li>Накрутка ✅ Норма</li>
+        <li>Контент на английском, гео US / CA / AU</li>
+        <li>Тематика совпадает с болью сегмента</li>
+      </ul>
+    </div>
+    <div class="col-card">
+      <h4>❌ Исключения</h4>
+      <ul>
+        <li>Generic wellness / медитация-мейнстрим</li>
+        <li>Yoga-шаблонщики без ADHD-угла</li>
+        <li>Казино / скам / крипто коллаборации в истории</li>
+        <li>Аккаунты с признаками накрутки (ER аномально низкий при высоких подписчиках)</li>
+        <li>Контент не на целевом языке/гео</li>
+        <li>Неактивные &gt;14 дней</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: FUNNEL -->
+<section>
+  <div class="section-num">02 / Слайд 2</div>
+  <h2>Воронка отбора</h2>
+  <p class="section-sub">От сырой базы — к финальному шорт-листу пригодных кандидатов.</p>
+
+  <div class="funnel">
+    <div class="funnel-step">
+      <div class="funnel-label">Всего проанализировано</div>
+      <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:100%"><span class="funnel-num">110</span></div></div>
+    </div>
+    <div class="funnel-step">
+      <div class="funnel-label">Заполнены Подписчики + ER</div>
+      <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:100%"><span class="funnel-num">110</span></div></div>
+    </div>
+    <div class="funnel-step">
+      <div class="funnel-label">Базовые фильтры (10k–50k + ER ≥ порогу)</div>
+      <div class="funnel-bar-wrap"><div class="funnel-bar warn" style="width:26%"><span class="funnel-num">29</span></div></div>
+    </div>
+    <div class="funnel-step">
+      <div class="funnel-label">✅ Норма накрутки + свежий контент ≤14д</div>
+      <div class="funnel-bar-wrap"><div class="funnel-bar ok" style="width:22%"><span class="funnel-num">24</span></div></div>
+    </div>
+  </div>
+
+  <div class="callout danger" style="margin-top:8px">
+    <span class="label">Важно</span> <strong>63 из 110 аккаунтов (57%) — ❌ Красный флаг по накрутке.</strong> База требует серьёзной чистки перед следующим раундом сбора.
+  </div>
+
+  <h3>Разбивка шорт-листа по сегментам</h3>
+  <div class="seg-bars">
+    <div class="seg-name">S1 ADHD</div>
+    <div class="seg-bar-track"><div class="seg-bar-fill" style="width:100%"></div></div>
+    <div class="seg-count">14</div>
+
+    <div class="seg-name">S2 Burnout</div>
+    <div class="seg-bar-track"><div class="seg-bar-fill" style="width:28%"></div></div>
+    <div class="seg-count">4</div>
+
+    <div class="seg-name gap">S3 Detox</div>
+    <div class="seg-bar-track"><div class="seg-bar-fill gap" style="width:7%"></div></div>
+    <div class="seg-count gap">0</div>
+
+    <div class="seg-name gap">S4 Sleep</div>
+    <div class="seg-bar-track"><div class="seg-bar-fill gap" style="width:7%"></div></div>
+    <div class="seg-count gap">0</div>
+
+    <div class="seg-name gap">S5 Skeptic</div>
+    <div class="seg-bar-track"><div class="seg-bar-fill gap" style="width:7%"></div></div>
+    <div class="seg-count gap">0</div>
+  </div>
+
+  <div class="callout warn">
+    <span class="label">Пробел</span> Сегменты S3, S4, S5 полностью отсутствуют. Необходим отдельный поиск по хештегам <code>#dopaminemenu</code>, <code>#sleephygiene</code>, <code>#screentime</code>, <code>#digitalmindfulness</code> до следующего раунда охватов.
+  </div>
+</section>
+
+
+<!-- SECTION 3: TOP-5 -->
+<section>
+  <div class="section-num">03 / Слайд 3</div>
+  <h2>Топ-4 «Звёзды» шорт-листа</h2>
+  <p class="section-sub">Лучшие кандидаты по совокупности: ER, диапазон подписчиков 10–50k, сегмент S1 (приоритет 1★), свежесть контента.</p>
+
+  <div class="stars-grid">
+    <!-- Star 1 -->
+    <div class="star-card">
+      <div class="rank">#1 · TikTok · S1 ADHD · ★★★ · fit 8/10</div>
+      <div class="handle"><a href="https://www.tiktok.com/@peter_liven" target="_blank">@peter_liven</a></div>
+      <div class="tagline">Bio: «Self-Discovery AI Ambassador · Neurodivergent reset». Ключевые темы: «knowing vs. doing», executive dysfunction vs. laziness — прямой pain statement для ashr. Нужна ручная верификация профиля перед отправкой.</div>
+      <dl>
+        <dt>Подписчики</dt><dd>29 100</dd>
+        <dt>ER</dt><dd><span class="tag-green">247.82%</span></dd>
+        <dt>Ср. просмотры</dt><dd>722 179</dd>
+        <dt>Последний пост</dt><dd><span class="tag-yellow">14 дней назад</span></dd>
+        <dt>Статус</dt><dd>⚠️ Верификация профиля — скорее да</dd>
+      </dl>
+      <div class="roi-box">
+        <div class="roi-item"><div class="v">722K</div><div class="l">Прогноз охвата</div></div>
+        <div class="roi-item"><div class="v">14 444</div><div class="l">Прогноз установок</div></div>
+        <div class="roi-item"><div class="v">$0</div><div class="l">CPI (Tier 1)</div></div>
+      </div>
+    </div>
+
+    <!-- Star 2 -->
+    <div class="star-card">
+      <div class="rank">#2 · Instagram · S1 ADHD · ★★ · fit 7/10 · Wave 2</div>
+      <div class="handle"><a href="https://www.instagram.com/rachelbacco/" target="_blank">@rachelbacco</a></div>
+      <div class="tagline">Bio: «Helping ADHD parents thrive · M.A. Clinical Counseling». Фокус — ADHD-родители 28–45, не универсальный ADHD. ER 214% — один вирусный Reels, типичный ER постов 2–4%. Не верифицирован. Wave 2.</div>
+      <dl>
+        <dt>Подписчики</dt><dd>15 569</dd>
+        <dt>ER (завышен!)</dt><dd><span class="tag-yellow">214.54% ⚠️ viral outlier</span></dd>
+        <dt>Реальный ER постов</dt><dd><span class="tag-yellow">~2–4% (типичный)</span></dd>
+        <dt>Последний пост</dt><dd><span class="tag-green">1 день назад</span></dd>
+        <dt>Статус</dt><dd>✅ В нише · не верифицирован</dd>
+      </dl>
+      <div class="roi-box">
+        <div class="roi-item"><div class="v">~50–100K</div><div class="l">Реалист. охват</div></div>
+        <div class="roi-item"><div class="v">1–2K</div><div class="l">Прогноз установок</div></div>
+        <div class="roi-item"><div class="v">$0</div><div class="l">CPI (Tier 1)</div></div>
+      </div>
+    </div>
+
+    <!-- Star 3 -->
+    <div class="star-card" style="border-color:var(--accent-warm)">
+      <div class="rank">#3 · Instagram · S1 ADHD · ★★ · fit 5/10 · ⚠️ Риск</div>
+      <div class="handle"><a href="https://www.instagram.com/amberscoaching/" target="_blank">@amberscoaching</a></div>
+      <div class="tagline">Bio: «Yoga teacher & nervous system health» — профиль слишком глубоко в holistic wellness / somatic / yoga. Аудитория UK-leaning. Риск: ashr выглядит как «ещё один wellness tool» на этом аккаунте. Не рекомендуется для Wave 1.</div>
+      <dl>
+        <dt>Подписчики</dt><dd>25 128</dd>
+        <dt>ER</dt><dd><span class="tag-green">10.01%</span></dd>
+        <dt>Ср. просмотры</dt><dd>1 705</dd>
+        <dt>Последний пост</dt><dd><span class="tag-green">1 день назад</span></dd>
+        <dt>Статус</dt><dd><span class="tag-red">⚠️ Wellness overlap — не Wave 1</span></dd>
+      </dl>
+      <div class="roi-box">
+        <div class="roi-item"><div class="v">2 515</div><div class="l">Прогноз охвата</div></div>
+        <div class="roi-item"><div class="v">50</div><div class="l">Прогноз установок</div></div>
+        <div class="roi-item"><div class="v">$0</div><div class="l">CPI (Tier 1)</div></div>
+      </div>
+    </div>
+
+    <!-- Star 4 (was #5) -->
+    <div class="star-card">
+      <div class="rank">#4 · Instagram · S1 ADHD · ★★★ · fit 8/10 · Wave 2</div>
+      <div class="handle"><a href="https://www.instagram.com/charlottefryadhdcoach/" target="_blank">@charlottefryadhdcoach</a></div>
+      <div class="tagline">Bio: «Helping people with ADHD quiet the noise, calm their mind». Сайт elephantinthemind.com — «ADHD Coaching That Makes Sense / Rooted in neuroscience». Затрагивает S1/S2/S4 боли. Аудитория UK-leaning. Рекомендован Wave 2.</div>
+      <dl>
+        <dt>Подписчики</dt><dd>14 901</dd>
+        <dt>ER</dt><dd><span class="tag-yellow">4.07%</span></dd>
+        <dt>Ср. просмотры</dt><dd>50</dd>
+        <dt>Последний пост</dt><dd><span class="tag-green">2 дня назад</span></dd>
+        <dt>Статус</dt><dd>✅ В нише · Wave 2 (3–4 нед.)</dd>
+      </dl>
+      <div class="roi-box">
+        <div class="roi-item"><div class="v">606</div><div class="l">Охват (ER-модель)</div></div>
+        <div class="roi-item"><div class="v">12</div><div class="l">Прогноз установок</div></div>
+        <div class="roi-item"><div class="v">$0</div><div class="l">CPI (Tier 1)</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warn" style="margin-top:8px"><span class="label">Обновлено</span> @rachelbacco: ER 214% — один вирусный Reels, типичный ER постов ~2–4%. Реалистичный охват одного поста: 50–100K. @amberscoaching: bio «Yoga teacher &amp; nervous system health» — риск wellness-bucket для ashr; не Wave 1.</div>
+</section>
+
+<!-- SECTION 4: BUDGET / ROI -->
+<section>
+  <div class="section-num">04 / Слайд 4</div>
+  <h2>Бюджет и прогноз</h2>
+  <p class="section-sub">Все кандидаты — Tier 1 (gifted access, $0). Прогноз охвата = ср. просмотры 5 постов; если 0 — Подписчики × ER%. Конверсия в установки: 2%.</p>
+
+  <div class="kpi-row">
+    <div class="kpi-box"><div class="v">12</div><div class="l">кандидатов в таблице (с сегментом)</div></div>
+    <div class="kpi-box"><div class="v">~3.3M</div><div class="l">суммарный прогнозируемый охват</div></div>
+    <div class="kpi-box"><div class="v">~67K</div><div class="l">прогнозируемые установки</div></div>
+    <div class="kpi-box"><div class="v">$0</div><div class="l">общий бюджет (Tier 1 gifted)</div></div>
+  </div>
+  <div class="callout warn"><span class="label">Скорректированный</span> Без @rachelbacco (viral outlier): охват ~1.0M, установки ~21K — реалистичная консервативная оценка.</div>
+
+  <table class="budget-table">
+    <thead>
+      <tr>
+        <th>Аккаунт</th><th>Сег.</th><th>Плат.</th><th>Подп.</th><th>ER</th><th>Формат</th><th>Охват (прогноз)</th><th>Установки</th><th>CPI</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="handle-cell"><a href="https://www.tiktok.com/@peter_liven" target="_blank">@peter_liven</a></td><td>S1</td><td>TikTok</td><td class="num">27 100</td><td><span class="tag-green">247.82%</span></td><td>Tier 1</td><td class="num">722 179</td><td class="num">14 444</td><td>$0</td></tr>
+      <tr><td class="handle-cell"><a href="https://www.instagram.com/rachelbacco/" target="_blank">@rachelbacco</a></td><td>S1</td><td>IG</td><td class="num">15 569</td><td><span class="tag-green">214.54%</span></td><td>Tier 1</td><td class="num">2 294 058*</td><td class="num">45 881*</td><td>$0</td></tr>
+      <tr><td class="handle-cell"><a href="https://www.tiktok.com/@tymirataish" target="_blank">@tymirataish</a></td><td>S1</td><td>TikTok</td><td class="num">20 800</td><td><span class="tag-green">84.27%</span></td><td>Tier 1</td><td class="num">90 686</td><td class="num">1 814</td><td>$0</td></tr>
+      <tr><td class="handle-cell"><a href="https://www.tiktok.com/@stay.at.home.tomm" target="_blank">@stay.at.home.tomm</a></td><td>S1</td><td>TikTok</td><td class="num">44 600</td><td><span class="tag-green">45.50%</span></td><td>Tier 1</td><td class="num">194 389</td><td class="num">3 888</td><td>$0</td></tr>
+      <tr><td class="handle-cell"><a href="https://www.instagram.com/amberscoaching/" target="_blank">@amberscoaching</a></td><td>S1</td><td>IG</td><td class="num">25 128</td><td><span class="tag-green">10.01%</span></td><td>Tier 1</td><td class="num">2 515</td><td class="num">50</td><td>$0</td></tr>
+      <tr><td class="handle-cell"><a href="https://www.instagram.com/homewiththeeverissfamily/" target="_blank">@homewiththeeverissfamily</a></td><td>S1</td><td>IG</td><td class="num">10 865</td><td><span class="tag-yellow">5.78%</span></td><td>Tier 1</td><td class="num">628</td><td class="num">13</td><td>$0</td></tr>
+      <tr><td class="handle-cell"><a href="https://www.instagram.com/sophiehalecreative/" target="_blank">@sophiehalecreative</a></td><td>S1</td><td>IG</td><td class="num">27 632</td><td><span class="tag-yellow">4.59%</span></td><td>Tier 1</td><td class="num">1 268</td><td class="num">25</td><td>$0</td></tr>
+      <tr><td class="handle-cell"><a href="https://www.instagram.com/charlottefryadhdcoach/" target="_blank">@charlottefryadhdcoach</a></td><td>S1</td><td>IG</td><td class="num">14 901</td><td><span class="tag-yellow">4.07%</span></td><td>Tier 1</td><td class="num">606</td><td class="num">12</td><td>$0</td></tr>
+      <tr><td class="handle-cell"><a href="https://www.tiktok.com/@trialntribulations" target="_blank">@trialntribulations</a></td><td>S1</td><td>TikTok</td><td class="num">13 700</td><td><span class="tag-yellow">4.02%</span></td><td>Tier 1</td><td class="num">7 156</td><td class="num">143</td><td>$0</td></tr>
+      <tr><td class="handle-cell"><a href="https://www.instagram.com/maddytalksmoney/" target="_blank">@maddytalksmoney</a></td><td>S1</td><td>IG</td><td class="num">17 784</td><td><span class="tag-yellow">3.21%</span></td><td>Tier 1</td><td class="num">14 526</td><td class="num">291</td><td>$0</td></tr>
+      <tr><td class="handle-cell"><a href="https://www.instagram.com/aimeeyoungcoaching/" target="_blank">@aimeeyoungcoaching</a></td><td>S2</td><td>IG</td><td class="num">18 235</td><td><span class="tag-green">5.84%</span></td><td>Tier 1</td><td class="num">15 054</td><td class="num">301</td><td>$0</td></tr>
+      <tr><td class="handle-cell"><a href="https://www.instagram.com/jordan.b.jensen/" target="_blank">@jordan.b.jensen</a></td><td>S2</td><td>IG</td><td class="num">10 055</td><td><span class="tag-yellow">3.62%</span></td><td>Tier 1</td><td class="num">4 463</td><td class="num">89</td><td>$0</td></tr>
+      <tr class="total-row">
+        <td colspan="6"><strong>ИТОГО</strong></td>
+        <td class="num"><strong>~3 348 000</strong></td>
+        <td class="num"><strong>~67 000</strong></td>
+        <td><strong>$0</strong></td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px;color:var(--muted)">* — вирусный выброс; одиночный пост с аномальным охватом (@rachelbacco). Реалистичный устойчивый охват без outlier: ~1.0M, установки ~21 000.</p>
+</section>
+
+<!-- SECTION 5: DETAILED TABLE -->
+<section>
+  <div class="section-num">05 / Формат 2</div>
+  <h2>Детализированная таблица шорт-листа</h2>
+  <p class="section-sub">12 кандидатов с определённым сегментом. Цветовое кодирование: <span class="tag-green">зелёный</span> — сильно, <span class="tag-yellow">жёлтый</span> — средне, <span class="tag-red">красный</span> — риск или слабость.</p>
+
+  <!-- ====== S1 CANDIDATES ====== -->
+  <h3>S1 · ADHD (10 кандидатов)</h3>
+
+  <!-- 1. peter_liven -->
+  <div class="detail-card">
+    <div class="detail-header">
+      <div class="handle"><a href="https://www.tiktok.com/@peter_liven" target="_blank">@peter_liven</a></div>
+      <div class="badges">
+        <span class="badge plat">TikTok</span>
+        <span class="badge seg">S1 · ADHD</span>
+        <span class="badge green">✅ В нише</span>
+        <span class="badge green">Накрутка: Норма</span>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-block">
+        <h5>Блок 1 · Кто это</h5>
+        <dl>
+          <dt>Подписчики</dt><dd>27 100</dd>
+          <dt>Описание профиля</dt><dd>TikTok-криэйтор с хроническим ADHD-контентом — лайфхаки, нейродивергентный юмор, принятие диагноза</dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 2 · Почему ashr</h5>
+        <dl>
+          <dt>ЦА блогера</dt><dd>ADHD 18–35 US — ищут практические инструменты, не классическую медитацию</dd>
+          <dt>Tone of Voice</dt><dd>Личный + юмористический</dd>
+          <dt>Ключевая боль</dt><dd>«Медитация для меня невозможна, мой мозг не останавливается»</dd>
+          <dt>Brand Safety</dt><dd><span class="tag-green">🟢 Норма</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 3 · Цифры</h5>
+        <dl>
+          <dt>ER (%)</dt><dd><span class="tag-green">🟢 247.82%</span></dd>
+          <dt>Ср. просмотры</dt><dd><span class="tag-green">🟢 722 179</span></dd>
+          <dt>Ср. лайки</dt><dd>66 241</dd>
+          <dt>Ср. комментарии</dt><dd><span class="tag-green">🟢 919</span></dd>
+          <dt>Последний пост</dt><dd><span class="tag-yellow">🟡 14 дней (2026-04-22)</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 4 · Коммерция</h5>
+        <dl>
+          <dt>Формат</dt><dd>Tier 1 (gifted access, $0)</dd>
+          <dt>Прогноз охвата</dt><dd>722 179</dd>
+          <dt>Прогноз установок</dt><dd>14 444</dd>
+          <dt>CPI</dt><dd>$0</dd>
+        </dl>
+      </div>
+      <div class="detail-block" style="grid-column:1/-1">
+        <h5>Блок 5 · Стратегия захода</h5>
+        <dl>
+          <dt>Предлагаемый формат</dt><dd>«What actually helps my ADHD brain» — нативное упоминание ashr как инструмента успокоения без давления</dd>
+          <dt>Угол подачи</dt><dd>«Meditation is impossible for me» → ashr как первый шаг, не классическая медитация</dd>
+          <dt>Статус</dt><dd>✅ В нише (не писали)</dd>
+          <dt>Приоритет</dt><dd><span class="wave-1">🔴 Wave 1 — писать первыми</span></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. rachelbacco -->
+  <div class="detail-card">
+    <div class="detail-header">
+      <div class="handle"><a href="https://www.instagram.com/rachelbacco/" target="_blank">@rachelbacco</a></div>
+      <div class="badges">
+        <span class="badge plat">Instagram</span>
+        <span class="badge seg">S1 · ADHD</span>
+        <span class="badge green">✅ В нише</span>
+        <span class="badge green">Накрутка: Норма</span>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-block">
+        <h5>Блок 1 · Кто это</h5>
+        <dl>
+          <dt>Подписчики</dt><dd>15 569</dd>
+          <dt>Описание профиля</dt><dd>Certified ADHD Parent Coach — запускает ADHD Parent Accelerator (групповые созвоны + 1:1 для родителей детей с ADHD)</dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 2 · Почему ashr</h5>
+        <dl>
+          <dt>ЦА блогера</dt><dd>Родители детей с ADHD + взрослые с ADHD 28–45 US</dd>
+          <dt>Tone of Voice</dt><dd>Уютный + личный + профессиональный</dd>
+          <dt>Ключевая боль</dt><dd>«Не могу быть спокойным родителем, когда сам с ADHD»</dd>
+          <dt>Brand Safety</dt><dd><span class="tag-green">🟢 Норма</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 3 · Цифры</h5>
+        <dl>
+          <dt>ER (%)</dt><dd><span class="tag-green">🟢 214.54%</span></dd>
+          <dt>Ср. просмотры</dt><dd><span class="tag-green">🟢 2 294 058</span> ⚠️ вирусный выброс</dd>
+          <dt>Ср. лайки</dt><dd>30 920</dd>
+          <dt>Ср. комментарии</dt><dd><span class="tag-green">🟢 2 481</span></dd>
+          <dt>Последний пост</dt><dd><span class="tag-green">🟢 1 день назад</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 4 · Коммерция</h5>
+        <dl>
+          <dt>Формат</dt><dd>Tier 1 (gifted access, $0)</dd>
+          <dt>Прогноз охвата</dt><dd>~50–100K (реалистичный, без viral spike)</dd>
+          <dt>Прогноз установок</dt><dd>1 000–2 000</dd>
+          <dt>CPI</dt><dd>$0</dd>
+        </dl>
+      </div>
+      <div class="detail-block" style="grid-column:1/-1">
+        <h5>Блок 5 · Стратегия захода</h5>
+        <dl>
+          <dt>Предлагаемый формат</dt><dd>«What helps my ADHD brain as a parent» — ashr как вечерний ритуал перед сном, чтобы «выключиться»</dd>
+          <dt>Угол подачи</dt><dd>«After the kids are in bed, my ADHD doesn't stop» → ashr как downtime tool</dd>
+          <dt>Статус</dt><dd>✅ В нише (не писали)</dd>
+          <dt>Приоритет</dt><dd><span class="wave-1">🔴 Wave 1 — писать первыми</span></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. tymirataish -->
+  <div class="detail-card">
+    <div class="detail-header">
+      <div class="handle"><a href="https://www.tiktok.com/@tymirataish" target="_blank">@tymirataish</a></div>
+      <div class="badges">
+        <span class="badge plat">TikTok</span>
+        <span class="badge seg">S1 · ADHD</span>
+        <span class="badge yellow">⚠️ Под вопросом</span>
+        <span class="badge green">Накрутка: Норма</span>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-block">
+        <h5>Блок 1 · Кто это</h5>
+        <dl>
+          <dt>Подписчики</dt><dd>20 800</dd>
+          <dt>Описание профиля</dt><dd>TikTok-криэйтор S1 — высокий ER, но лучший пост по #datingadvice, тематика ADHD+отношения требует проверки всего профиля</dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 2 · Почему ashr</h5>
+        <dl>
+          <dt>ЦА блогера</dt><dd>ADHD 20–35, отношения и саморегуляция</dd>
+          <dt>Tone of Voice</dt><dd>Юмористический + личный</dd>
+          <dt>Ключевая боль</dt><dd>ADHD в отношениях — импульсивность, RSD, эмоциональная дисрегуляция</dd>
+          <dt>Brand Safety</dt><dd><span class="tag-yellow">🟡 Проверить тон всего профиля</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 3 · Цифры</h5>
+        <dl>
+          <dt>ER (%)</dt><dd><span class="tag-green">🟢 84.27%</span></dd>
+          <dt>Ср. просмотры</dt><dd><span class="tag-green">🟢 90 686</span></dd>
+          <dt>Ср. лайки</dt><dd>17 404</dd>
+          <dt>Ср. комментарии</dt><dd><span class="tag-green">🟢 123</span></dd>
+          <dt>Последний пост</dt><dd><span class="tag-yellow">🟡 14 дней назад</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 4 · Коммерция</h5>
+        <dl>
+          <dt>Формат</dt><dd>Tier 1 (gifted access, $0)</dd>
+          <dt>Прогноз охвата</dt><dd>90 686</dd>
+          <dt>Прогноз установок</dt><dd>1 814</dd>
+          <dt>CPI</dt><dd>$0</dd>
+        </dl>
+      </div>
+      <div class="detail-block" style="grid-column:1/-1">
+        <h5>Блок 5 · Стратегия захода</h5>
+        <dl>
+          <dt>Предлагаемый формат</dt><dd>«What helps my ADHD brain» с фокусом на саморегуляцию в отношениях — если профиль действительно ADHD, а не только дейтинг</dd>
+          <dt>Угол подачи</dt><dd>«My ADHD makes me impossible to calm down» → ashr как инструмент перед сложными разговорами</dd>
+          <dt>Статус</dt><dd>⚠️ Под вопросом — сначала проверить профиль</dd>
+          <dt>Приоритет</dt><dd><span class="wave-1y">🟡 Wave 1 — после верификации профиля</span></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. stay.at.home.tomm -->
+  <div class="detail-card">
+    <div class="detail-header">
+      <div class="handle"><a href="https://www.tiktok.com/@stay.at.home.tomm" target="_blank">@stay.at.home.tomm</a></div>
+      <div class="badges">
+        <span class="badge plat">TikTok</span>
+        <span class="badge seg">S1 · ADHD</span>
+        <span class="badge yellow">⚠️ Под вопросом</span>
+        <span class="badge green">Накрутка: Норма</span>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-block">
+        <h5>Блок 1 · Кто это</h5>
+        <dl>
+          <dt>Подписчики</dt><dd>44 600</dd>
+          <dt>Описание профиля</dt><dd>Stay-at-home отец с ADHD на TikTok — лучший пост про воспитание детей, не чистый ADHD-контент; нужна проверка профиля</dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 2 · Почему ashr</h5>
+        <dl>
+          <dt>ЦА блогера</dt><dd>Родители с ADHD 28–42 US — парентинг + нейродивергентность</dd>
+          <dt>Tone of Voice</dt><dd>Уютный + родительский + юмористический</dd>
+          <dt>Ключевая боль</dt><dd>«Не могу успокоиться после дня с детьми — мозг не выключается»</dd>
+          <dt>Brand Safety</dt><dd><span class="tag-yellow">🟡 Проверить весь профиль на ADHD-контент</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 3 · Цифры</h5>
+        <dl>
+          <dt>ER (%)</dt><dd><span class="tag-green">🟢 45.50%</span></dd>
+          <dt>Ср. просмотры</dt><dd><span class="tag-green">🟢 194 389</span></dd>
+          <dt>Ср. лайки</dt><dd>20 148</dd>
+          <dt>Ср. комментарии</dt><dd><span class="tag-green">🟢 143</span></dd>
+          <dt>Последний пост</dt><dd><span class="tag-yellow">🟡 14 дней назад</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 4 · Коммерция</h5>
+        <dl>
+          <dt>Формат</dt><dd>Tier 1 (gifted access, $0)</dd>
+          <dt>Прогноз охвата</dt><dd>194 389</dd>
+          <dt>Прогноз установок</dt><dd>3 888</dd>
+          <dt>CPI</dt><dd>$0</dd>
+        </dl>
+      </div>
+      <div class="detail-block" style="grid-column:1/-1">
+        <h5>Блок 5 · Стратегия захода</h5>
+        <dl>
+          <dt>Предлагаемый формат</dt><dd>«What helps my ADHD brain as a stay-at-home dad» — ashr как вечерний reset после дня с детьми</dd>
+          <dt>Угол подачи</dt><dd>«After the chaos, I need 5 minutes that actually work» → ashr</dd>
+          <dt>Статус</dt><dd>⚠️ Под вопросом — требует проверки всего профиля</dd>
+          <dt>Приоритет</dt><dd><span class="wave-1y">🟡 Wave 1 — после верификации профиля</span></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 6. amberscoaching -->
+  <div class="detail-card">
+    <div class="detail-header">
+      <div class="handle"><a href="https://www.instagram.com/amberscoaching/" target="_blank">@amberscoaching</a></div>
+      <div class="badges">
+        <span class="badge plat">Instagram</span>
+        <span class="badge seg">S1 · ADHD</span>
+        <span class="badge green">✅ В нише</span>
+        <span class="badge green">Накрутка: Норма</span>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-block">
+        <h5>Блок 1 · Кто это</h5>
+        <dl>
+          <dt>Подписчики</dt><dd>25 128</dd>
+          <dt>Описание профиля</dt><dd>Certified Holistic ADHD Coach (верифицирован) — принятие диагноза, организация, продуктивность для подростков и взрослых</dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 2 · Почему ashr</h5>
+        <dl>
+          <dt>ЦА блогера</dt><dd>ADHD 18–40 US — ищут холистические методы управления симптомами</dd>
+          <dt>Tone of Voice</dt><dd>Уютный + образовательный + поддерживающий</dd>
+          <dt>Ключевая боль</dt><dd>«Классическая медитация не работает при ADHD»</dd>
+          <dt>Brand Safety</dt><dd><span class="tag-green">🟢 Норма</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 3 · Цифры</h5>
+        <dl>
+          <dt>ER (%)</dt><dd><span class="tag-green">🟢 10.01%</span></dd>
+          <dt>Ср. просмотры</dt><dd><span class="tag-red">🔴 1 705</span></dd>
+          <dt>Ср. лайки</dt><dd>2 411</dd>
+          <dt>Ср. комментарии</dt><dd><span class="tag-green">🟢 104</span></dd>
+          <dt>Последний пост</dt><dd><span class="tag-green">🟢 1 день назад</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 4 · Коммерция</h5>
+        <dl>
+          <dt>Формат</dt><dd>Tier 1 (gifted access, $0)</dd>
+          <dt>Прогноз охвата</dt><dd>2 515 (ER-модель)</dd>
+          <dt>Прогноз установок</dt><dd>50</dd>
+          <dt>CPI</dt><dd>$0</dd>
+        </dl>
+      </div>
+      <div class="detail-block" style="grid-column:1/-1">
+        <h5>Блок 5 · Стратегия захода</h5>
+        <dl>
+          <dt>Предлагаемый формат</dt><dd>«Holistic ADHD tools I actually recommend» — ashr в подборке практических инструментов, а не standalone реклама</dd>
+          <dt>Угол подачи</dt><dd>«Meditation is impossible for me» → ashr как адаптация медитации под ADHD-мозг</dd>
+          <dt>Статус</dt><dd>✅ В нише (не писали)</dd>
+          <dt>Приоритет</dt><dd><span class="wave-1">🔴 Wave 1 — писать первыми</span></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 8. homewiththeeverissfamily -->
+  <div class="detail-card">
+    <div class="detail-header">
+      <div class="handle"><a href="https://www.instagram.com/homewiththeeverissfamily/" target="_blank">@homewiththeeverissfamily</a></div>
+      <div class="badges">
+        <span class="badge plat">Instagram</span>
+        <span class="badge seg">S1 · ADHD</span>
+        <span class="badge">Новый</span>
+        <span class="badge green">Накрутка: Норма</span>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-block">
+        <h5>Блок 1 · Кто это</h5>
+        <dl>
+          <dt>Подписчики</dt><dd>10 865</dd>
+          <dt>Описание профиля</dt><dd>Семейный аккаунт с нейродивергентным углом — воспитание детей с ADHD, уютная лояльная аудитория</dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 2 · Почему ashr</h5>
+        <dl>
+          <dt>ЦА блогера</dt><dd>Родители детей с ADHD 28–45 US</dd>
+          <dt>Tone of Voice</dt><dd>Уютный + семейный</dd>
+          <dt>Ключевая боль</dt><dd>«После нейродивергентного ребёнка мне нужен перезапуск»</dd>
+          <dt>Brand Safety</dt><dd><span class="tag-green">🟢 Норма</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 3 · Цифры</h5>
+        <dl>
+          <dt>ER (%)</dt><dd><span class="tag-yellow">🟡 5.78%</span></dd>
+          <dt>Ср. просмотры</dt><dd><span class="tag-red">🔴 0 (фото-аккаунт)</span></dd>
+          <dt>Ср. лайки</dt><dd>606</dd>
+          <dt>Ср. комментарии</dt><dd><span class="tag-yellow">🟡 21</span></dd>
+          <dt>Последний пост</dt><dd><span class="tag-green">🟢 2 дня назад</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 4 · Коммерция</h5>
+        <dl>
+          <dt>Формат</dt><dd>Tier 1 (gifted access, $0)</dd>
+          <dt>Прогноз охвата</dt><dd>628 (ER-модель)</dd>
+          <dt>Прогноз установок</dt><dd>13</dd>
+          <dt>CPI</dt><dd>$0</dd>
+        </dl>
+      </div>
+      <div class="detail-block" style="grid-column:1/-1">
+        <h5>Блок 5 · Стратегия захода</h5>
+        <dl>
+          <dt>Предлагаемый формат</dt><dd>«What helps my ADHD brain as a parent» — вечерний ритуал с ashr после сложного дня</dd>
+          <dt>Угол подачи</dt><dd>«I can't turn off after my neurodivergent kids go to bed» → ashr</dd>
+          <dt>Статус</dt><dd>Новый — ещё не писали</dd>
+          <dt>Приоритет</dt><dd><span class="wave-1">🔴 Wave 1</span></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. sophiehalecreative -->
+  <div class="detail-card">
+    <div class="detail-header">
+      <div class="handle"><a href="https://www.instagram.com/sophiehalecreative/" target="_blank">@sophiehalecreative</a></div>
+      <div class="badges">
+        <span class="badge plat">Instagram</span>
+        <span class="badge seg">S1 · ADHD</span>
+        <span class="badge">Новый</span>
+        <span class="badge green">Накрутка: Норма</span>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-block">
+        <h5>Блок 1 · Кто это</h5>
+        <dl>
+          <dt>Подписчики</dt><dd>27 632</dd>
+          <dt>Описание профиля</dt><dd>Творческий аккаунт с ADHD-углом — продуктивность и самовыражение для нейродивергентных; Instagram фото-контент</dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 2 · Почему ashr</h5>
+        <dl>
+          <dt>ЦА блогера</dt><dd>ADHD-криэйторы 22–38 US — продуктивность, творчество</dd>
+          <dt>Tone of Voice</dt><dd>Творческий + личный</dd>
+          <dt>Ключевая боль</dt><dd>«ADHD мешает сосредоточиться на творческих проектах»</dd>
+          <dt>Brand Safety</dt><dd><span class="tag-green">🟢 Норма</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 3 · Цифры</h5>
+        <dl>
+          <dt>ER (%)</dt><dd><span class="tag-yellow">🟡 4.59%</span></dd>
+          <dt>Ср. просмотры</dt><dd><span class="tag-red">🔴 28 (фото-аккаунт)</span></dd>
+          <dt>Ср. лайки</dt><dd>1 253</dd>
+          <dt>Ср. комментарии</dt><dd><span class="tag-red">🔴 14</span></dd>
+          <dt>Последний пост</dt><dd><span class="tag-green">🟢 1 день назад</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 4 · Коммерция</h5>
+        <dl>
+          <dt>Формат</dt><dd>Tier 1 (gifted access, $0)</dd>
+          <dt>Прогноз охвата</dt><dd>1 268 (ER-модель)</dd>
+          <dt>Прогноз установок</dt><dd>25</dd>
+          <dt>CPI</dt><dd>$0</td>
+        </dl>
+      </div>
+      <div class="detail-block" style="grid-column:1/-1">
+        <h5>Блок 5 · Стратегия захода</h5>
+        <dl>
+          <dt>Предлагаемый формат</dt><dd>«My ADHD creative routine» — ashr как часть творческого flow-ритуала</dd>
+          <dt>Угол подачи</dt><dd>«Meditation is impossible for me» → ashr как creative reset между задачами</dd>
+          <dt>Статус</dt><dd>Новый — ещё не писали</dd>
+          <dt>Приоритет</dt><dd><span class="wave-1">🔴 Wave 1</span></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. charlottefryadhdcoach -->
+  <div class="detail-card">
+    <div class="detail-header">
+      <div class="handle"><a href="https://www.instagram.com/charlottefryadhdcoach/" target="_blank">@charlottefryadhdcoach</a></div>
+      <div class="badges">
+        <span class="badge plat">Instagram</span>
+        <span class="badge seg">S1 · ADHD</span>
+        <span class="badge green">✅ В нише</span>
+        <span class="badge green">Накрутка: Норма</span>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-block">
+        <h5>Блок 1 · Кто это</h5>
+        <dl>
+          <dt>Подписчики</dt><dd>14 901</dd>
+          <dt>Описание профиля</dt><dd>ADHD-коуч с фокусом на отношения (верифицирован) — допамин, RSD, trauma bonding, дейтинг с ADHD</dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 2 · Почему ashr</h5>
+        <dl>
+          <dt>ЦА блогера</dt><dd>ADHD 22–38 US, проблемы с отношениями и саморегуляцией</dd>
+          <dt>Tone of Voice</dt><dd>Образовательный + личный</dd>
+          <dt>Ключевая боль</dt><dd>«ADHD делает меня взрывным в отношениях — не могу успокоиться»</dd>
+          <dt>Brand Safety</dt><dd><span class="tag-green">🟢 Норма</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 3 · Цифры</h5>
+        <dl>
+          <dt>ER (%)</dt><dd><span class="tag-yellow">🟡 4.07%</span></dd>
+          <dt>Ср. просмотры</dt><dd><span class="tag-red">🔴 50 (фото-аккаунт)</span></dd>
+          <dt>Ср. лайки</dt><dd>591</dd>
+          <dt>Ср. комментарии</dt><dd><span class="tag-red">🔴 14</span></dd>
+          <dt>Последний пост</dt><dd><span class="tag-green">🟢 2 дня назад</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 4 · Коммерция</h5>
+        <dl>
+          <dt>Формат</dt><dd>Tier 1 (gifted access, $0)</dd>
+          <dt>Прогноз охвата</dt><dd>606 (ER-модель)</dd>
+          <dt>Прогноз установок</dt><dd>12</dd>
+          <dt>CPI</dt><dd>$0</dd>
+        </dl>
+      </div>
+      <div class="detail-block" style="grid-column:1/-1">
+        <h5>Блок 5 · Стратегия захода</h5>
+        <dl>
+          <dt>Предлагаемый формат</dt><dd>«Tools for ADHD emotional regulation» — ashr как инструмент перед сложными разговорами с партнёром</dd>
+          <dt>Угол подачи</dt><dd>«Meditation is impossible for me» → ashr как RSD/emotional deregulation tool</dd>
+          <dt>Статус</dt><dd>✅ В нише (не писали)</dd>
+          <dt>Приоритет</dt><dd><span class="wave-1">🔴 Wave 1 — писать первыми</span></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. trialntribulations -->
+  <div class="detail-card">
+    <div class="detail-header">
+      <div class="handle"><a href="https://www.tiktok.com/@trialntribulations" target="_blank">@trialntribulations</a></div>
+      <div class="badges">
+        <span class="badge plat">TikTok</span>
+        <span class="badge seg">S1 · ADHD</span>
+        <span class="badge yellow">⚠️ Под вопросом</span>
+        <span class="badge green">Накрутка: Норма</span>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-block">
+        <h5>Блок 1 · Кто это</h5>
+        <dl>
+          <dt>Подписчики</dt><dd>13 700</dd>
+          <dt>Описание профиля</dt><dd>TikTok S1 с провокационной подачей — лучший пост «I don't think ADHD is a valid excuse» создаёт напряжение в нише</dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 2 · Почему ashr</h5>
+        <dl>
+          <dt>ЦА блогера</dt><dd>ADHD 20–35 US + критики диагноза — дискуссионная аудитория</dd>
+          <dt>Tone of Voice</dt><dd>Провокационный / дискуссионный</dd>
+          <dt>Ключевая боль</dt><dd>ADHD как ярлык vs реальный инструмент управления вниманием</dd>
+          <dt>Brand Safety</dt><dd><span class="tag-yellow">🟡 Риск — провокационная позиция может конфликтовать с брендом</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 3 · Цифры</h5>
+        <dl>
+          <dt>ER (%)</dt><dd><span class="tag-yellow">🟡 4.02%</span></dd>
+          <dt>Ср. просмотры</dt><dd><span class="tag-yellow">🟡 7 156</span></dd>
+          <dt>Ср. лайки</dt><dd>547</dd>
+          <dt>Ср. комментарии</dt><dd><span class="tag-red">🔴 4</span></dd>
+          <dt>Последний пост</dt><dd><span class="tag-yellow">🟡 14 дней назад</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 4 · Коммерция</h5>
+        <dl>
+          <dt>Формат</dt><dd>Tier 1 (gifted access, $0)</dd>
+          <dt>Прогноз охвата</dt><dd>7 156</dd>
+          <dt>Прогноз установок</dt><dd>143</dd>
+          <dt>CPI</dt><dd>$0</dd>
+        </dl>
+      </div>
+      <div class="detail-block" style="grid-column:1/-1">
+        <h5>Блок 5 · Стратегия захода</h5>
+        <dl>
+          <dt>Предлагаемый формат</dt><dd>«I tried it so you don't have to» — скептический обзор ashr, который превращается в признание пользы</dd>
+          <dt>Угол подачи</dt><dd>«Everything wellness is fake» → «but this one actually worked for my ADHD brain»</dd>
+          <dt>Статус</dt><dd>⚠️ Под вопросом — высокий риск brand safety</dd>
+          <dt>Приоритет</dt><dd><span class="wave-1y">🟡 Wave 1 — только после детального ревью профиля</span></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- 14. maddytalksmoney -->
+  <div class="detail-card">
+    <div class="detail-header">
+      <div class="handle"><a href="https://www.instagram.com/maddytalksmoney/" target="_blank">@maddytalksmoney</a></div>
+      <div class="badges">
+        <span class="badge plat">Instagram</span>
+        <span class="badge seg">S1 · ADHD</span>
+        <span class="badge">Новый</span>
+        <span class="badge green">Накрутка: Норма</span>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-block">
+        <h5>Блок 1 · Кто это</h5>
+        <dl>
+          <dt>Подписчики</dt><dd>17 784</dd>
+          <dt>Описание профиля</dt><dd>Личные финансы с ADHD-углом — money mindset и практика для нейродивергентных, есть Reels</dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 2 · Почему ashr</h5>
+        <dl>
+          <dt>ЦА блогера</dt><dd>ADHD 22–38 US с финансовыми целями — продуктивность и фокус</dd>
+          <dt>Tone of Voice</dt><dd>Личный + практичный</dd>
+          <dt>Ключевая боль</dt><dd>«Финансовое выгорание — тревога не выключается»</dd>
+          <dt>Brand Safety</dt><dd><span class="tag-green">🟢 Норма</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 3 · Цифры</h5>
+        <dl>
+          <dt>ER (%)</dt><dd><span class="tag-yellow">🟡 3.21%</span></dd>
+          <dt>Ср. просмотры</dt><dd><span class="tag-yellow">🟡 14 526</span></dd>
+          <dt>Ср. лайки</dt><dd>532</dd>
+          <dt>Ср. комментарии</dt><dd><span class="tag-yellow">🟡 37</span></dd>
+          <dt>Последний пост</dt><dd><span class="tag-green">🟢 2 дня назад</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 4 · Коммерция</h5>
+        <dl>
+          <dt>Формат</dt><dd>Tier 1 (gifted access, $0)</dd>
+          <dt>Прогноз охвата</dt><dd>14 526</dd>
+          <dt>Прогноз установок</dt><dd>291</dd>
+          <dt>CPI</dt><dd>$0</dd>
+        </dl>
+      </div>
+      <div class="detail-block" style="grid-column:1/-1">
+        <h5>Блок 5 · Стратегия захода</h5>
+        <dl>
+          <dt>Предлагаемый формат</dt><dd>«ADHD money anxiety reset» — ashr как инструмент перед финансовыми решениями</dd>
+          <dt>Угол подачи</dt><dd>«Afternoon slump kills my productivity» → ashr как 5-минутный reset</dd>
+          <dt>Статус</dt><dd>Новый — ещё не писали</dd>
+          <dt>Приоритет</dt><dd><span class="wave-1">🔴 Wave 1</span></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== S2 CANDIDATES ====== -->
+  <h3>S2 · Burnout Professional (4 кандидата)</h3>
+
+  <!-- S2-1: aimeeyoungcoaching -->
+  <div class="detail-card">
+    <div class="detail-header">
+      <div class="handle"><a href="https://www.instagram.com/aimeeyoungcoaching/" target="_blank">@aimeeyoungcoaching</a></div>
+      <div class="badges">
+        <span class="badge plat">Instagram</span>
+        <span class="badge seg">S2 · Burnout</span>
+        <span class="badge yellow">⚠️ Под вопросом</span>
+        <span class="badge green">Накрутка: Норма</span>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-block">
+        <h5>Блок 1 · Кто это</h5>
+        <dl>
+          <dt>Подписчики</dt><dd>18 235</dd>
+          <dt>Описание профиля</dt><dd>Life Coach по выгоранию — коучинг и поддерживающий контент для S2 аудитории</dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 2 · Почему ashr</h5>
+        <dl>
+          <dt>ЦА блогера</dt><dd>Профессионалы 25–42 US в выгорании</dd>
+          <dt>Tone of Voice</dt><dd>Уютный + поддерживающий</dd>
+          <dt>Ключевая боль</dt><dd>«After work I can't switch off — afternoon slump + вечерняя тревога»</dd>
+          <dt>Brand Safety</dt><dd><span class="tag-green">🟢 Норма</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 3 · Цифры</h5>
+        <dl>
+          <dt>ER (%)</dt><dd><span class="tag-green">🟢 5.84%</span></dd>
+          <dt>Ср. просмотры</dt><dd><span class="tag-yellow">🟡 15 054</span></dd>
+          <dt>Ср. лайки</dt><dd>1 050</dd>
+          <dt>Ср. комментарии</dt><dd><span class="tag-red">🔴 15</span></dd>
+          <dt>Последний пост</dt><dd><span class="tag-green">🟢 2 дня назад</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 4 · Коммерция</h5>
+        <dl>
+          <dt>Формат</dt><dd>Tier 1 (gifted access, $0)</dd>
+          <dt>Прогноз охвата</dt><dd>15 054</dd>
+          <dt>Прогноз установок</dt><dd>301</dd>
+          <dt>CPI</dt><dd>$0</dd>
+        </dl>
+      </div>
+      <div class="detail-block" style="grid-column:1/-1">
+        <h5>Блок 5 · Стратегия захода</h5>
+        <dl>
+          <dt>Предлагаемый формат</dt><dd>«14-day burnout reset experiment» — ashr как часть восстановительного протокола</dd>
+          <dt>Угол подачи</dt><dd>«Afternoon slump» → ashr как 5-минутный рабочий reset</dd>
+          <dt>Статус</dt><dd>⚠️ Под вопросом</dd>
+          <dt>Приоритет</dt><dd><span class="wave-1">🔴 Wave 1 — лучший S2-кандидат</span></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2-2: jordan.b.jensen -->
+  <div class="detail-card">
+    <div class="detail-header">
+      <div class="handle"><a href="https://www.instagram.com/jordan.b.jensen/" target="_blank">@jordan.b.jensen</a></div>
+      <div class="badges">
+        <span class="badge plat">Instagram</span>
+        <span class="badge seg">S2 · Burnout</span>
+        <span class="badge yellow">⚠️ Под вопросом</span>
+        <span class="badge green">Накрутка: Норма</span>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-block">
+        <h5>Блок 1 · Кто это</h5>
+        <dl>
+          <dt>Подписчики</dt><dd>10 055</dd>
+          <dt>Описание профиля</dt><dd>Personal Coach S2 — burnout recovery контент, минимальная аудитория для nano</dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 2 · Почему ashr</h5>
+        <dl>
+          <dt>ЦА блогера</dt><dd>Профессионалы 28–42 в выгорании</dd>
+          <dt>Tone of Voice</dt><dd>Личный</dd>
+          <dt>Ключевая боль</dt><dd>«Выгорание — не могу восстановиться»</dd>
+          <dt>Brand Safety</dt><dd><span class="tag-green">🟢 Норма</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 3 · Цифры</h5>
+        <dl>
+          <dt>ER (%)</dt><dd><span class="tag-yellow">🟡 3.62%</span></dd>
+          <dt>Ср. просмотры</dt><dd><span class="tag-red">🔴 4 463</span></dd>
+          <dt>Ср. лайки</dt><dd>348</dd>
+          <dt>Ср. комментарии</dt><dd><span class="tag-red">🔴 15</span></dd>
+          <dt>Последний пост</dt><dd><span class="tag-green">🟢 1 день назад</span></dd>
+        </dl>
+      </div>
+      <div class="detail-block">
+        <h5>Блок 4 · Коммерция</h5>
+        <dl>
+          <dt>Формат</dt><dd>Tier 1 (gifted access, $0)</dd>
+          <dt>Прогноз охвата</dt><dd>4 463</dd>
+          <dt>Прогноз установок</dt><dd>89</dd>
+          <dt>CPI</dt><dd>$0</dd>
+        </dl>
+      </div>
+      <div class="detail-block" style="grid-column:1/-1">
+        <h5>Блок 5 · Стратегия захода</h5>
+        <dl>
+          <dt>Предлагаемый формат</dt><dd>«14-day reset experiment» — ashr как ежедневный burnout recovery ритуал</dd>
+          <dt>Угол подачи</dt><dd>«I can't switch off after work» → ashr</dd>
+          <dt>Статус</dt><dd>⚠️ Под вопросом</dd>
+          <dt>Приоритет</dt><dd><span class="wave-1">🔴 Wave 1 — S2 кандидат</span></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+
+</section>
+
+<!-- SECTION 6: RECOMMENDATIONS -->
+<section>
+  <div class="section-num">06 / Вывод</div>
+  <h2>Рекомендации</h2>
+  <p class="section-sub">Кому писать первыми, что недоукомплектовано, что нужно дособрать до финального шорт-листа.</p>
+
+  <h3>Кому писать в первую очередь — обновлённый список</h3>
+  <ul class="rec-list">
+    <li><strong>1. @peter_liven</strong> (TikTok, S1, fit 8/10) — лучший кандидат по тематическому fit: «knowing vs. doing», executive dysfunction vs. laziness — прямой pain statement для ashr. Hook DM: ссылаться на видео «Executive Dysfunction vs. Laziness». Формат: «5-minute reset when brain stuck between knowing and doing». <span class="wave-1">Wave 1 — после ручной проверки 10–15 последних постов</span></li>
+    <li><strong>2. @charlottefryadhdcoach</strong> (Instagram, S1, fit 8/10) — Bio «quiet the noise, calm their mind» прямо совпадает с языком ashr. Сайт rooted in neuroscience — не yoga/wellness. Угол: «immersive interruption to the scroll spiral». Осторожно: аудитория UK-leaning, не US-first. <span class="wave-1y">Wave 2 (3–4 неделя)</span></li>
+    <li><strong>3. @rachelbacco</strong> (Instagram, S1, fit 7/10) — Nano-кандидат с фокусом на ADHD-родителях 28–45. ER 214% — вирусный выброс; типичный ER постов ~2–4%. Формат: «ADHD Reset by Rachel» — вечерний ритуал после укладывания детей. Реалистичный охват поста: 50–100K. <span class="wave-1y">Wave 2 (Tier 1 gifted, тестовый запуск)</span></li>
+    <li><strong>4. @aimeeyoungcoaching</strong> (Instagram, S2, ER 5.84%) — единственный чистый S2-кандидат с реалистичным ER и свежим контентом. Закрывает Wave 1 по сегменту Burnout. <span class="wave-1">Wave 1 — S2</span></li>
+  </ul>
+
+  <div class="callout danger">
+    <span class="label">Исключено из Wave 1</span> <strong>@amberscoaching</strong> — bio «Yoga teacher &amp; nervous system health» создаёт риск wellness-bucket для ashr на старте. Аудитория UK-leaning. Можно рассмотреть в Wave 3+ с переформулированным углом.
+  </div>
+
+  <h3>Недоукомплектованные сегменты</h3>
+  <div class="callout danger">
+    <span class="label">Критично</span> <strong>S3, S4, S5 = 0 кандидатов.</strong> Это означает, что текущий поиск проводился только по ADHD/Burnout хештегам. До следующего раунда охватов необходим отдельный парсинг.
+  </div>
+  <ul class="rec-list">
+    <li><strong>S3 Gen Z Detox (0/3 нужно)</strong> — искать по: <code>#dopaminemenu</code>, <code>#screentime</code>, <code>#intentionalscrolling</code>, <code>#digitalmindfulness</code>, <code>#delululife</code>. Платформа: TikTok, возраст 18–26.</li>
+    <li><strong>S4 Sleep (0/3 нужно)</strong> — искать по: <code>#sleephygiene</code>, <code>#sleepcare</code>, <code>#insomniatips</code>, <code>#sleepcoach</code>, <code>#phonefreebed</code>. Платформа: Instagram + TikTok.</li>
+    <li><strong>S5 Meditation Skeptic (0/2 нужно)</strong> — искать по: <code>#meditationfailed</code>, <code>#mindfulnessforbeginners</code>, <code>#wellnessskeptic</code>. Фокус: скептики, которые «пробовали и не зашло».</li>
+  </ul>
+
+  <h3>Что нужно дособрать до финального шорт-листа</h3>
+  <ul class="rec-list">
+    <li><strong>Верификация профилей с ⚠️ статусом:</strong> @tymirataish, @stay.at.home.tomm, @trialntribulations — вручную проверить последние 9–12 постов на ADHD-контент (не только лучший пост). Срок: до начала Wave 1 рассылки.</li>
+    <li><strong>Чистка базы от Красного флага:</strong> 63 аккаунта с ❌ накруткой — при следующем парсинге ввести автоматический минимум ER по сегменту (S1 &gt;3%, S2 &gt;2%) как hard filter на этапе сбора.</li>
+    <li><strong>Reels vs фото:</strong> 8 Instagram-аккаунтов в шорт-листе показывают 0 просмотров — они фото-аккаунты. Для видео-форматов ashr предпочтительны TikTok-криэйторы или Instagram с активными Reels. Добавить проверку наличия Reels в критерии отбора.</li>
+    <li><strong>Гео-верификация:</strong> Несколько аккаунтов (adhdafpodcast — UK, test_na_adhd_pl — Польша) попали в базу, но не US/CA/AU. Рекомендовать добавить гео-фильтр на этапе парсинга.</li>
+  </ul>
+
+  <div class="callout">
+    <span class="label">Итог v2</span> Wave 1 — 2 кандидата готовы немедленно: @peter_liven (после ручной проверки) + @aimeeyoungcoaching (S2). Wave 2 — @charlottefryadhdcoach и @rachelbacco. Бюджет: <strong>$0</strong>. Реалистичный прогноз охвата Wave 1 (без viral outliers): <strong>~800K–1M</strong>. Прогноз установок: <strong>~16 000–20 000</strong> при конверсии 2%.
+  </div>
+</section>
+
+</div><!-- /wrap -->
+</body>
+</html>
